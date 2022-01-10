@@ -42,6 +42,7 @@ protected:
 
 public:
     T*** data_ptr;
+    T* basic_ptr;
     // typedef T value_type;
     T*** data() {
         return data_ptr;
@@ -69,6 +70,7 @@ public:
         if (cols == 0)
             throw std::invalid_argument("number of columns is 0");
         data_ptr = create3DArray(pages, rows, cols, val);
+        basic_ptr = data_ptr[0][0];
         m_pages = pages;
         m_rows = rows;
         m_cols = cols;
@@ -138,7 +140,8 @@ public:
 
     T& operator()(int i, int j, int k)
     {
-        return data_ptr[i][j][k]; // Warning
+        //return data_ptr[i][j][k]; // Warning
+        return *(basic_ptr + i * m_cols * m_rows + j * m_cols + k);
     }
 
 };
