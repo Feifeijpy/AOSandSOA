@@ -1,4 +1,4 @@
-﻿//#include <windows.h>
+//#include <windows.h>
 #include<chrono>
 #include <iostream>
 #include <random>
@@ -8,8 +8,8 @@
 using namespace std;
 
 constexpr int Nx = 200, Ny = 200, Nz = 200;
-//constexpr int repeatN = 1;
 constexpr int widthN = 2;
+//constexpr int repeatN = 100;
 
 struct Sxyz
 {
@@ -107,13 +107,53 @@ int main()
     double time2 = chrono::duration_cast<double_ms>(dt2).count();
     cout << "AOS time = " << time2 << endl;
 
+
+
+    // pointer array
+    t1 = chrono::steady_clock::now();
+    //for (int ire = 0; ire < repeatN; ire++) {
+    for (int ix = widthN; ix < Nx - widthN; ix++) {
+        for (int iy = widthN; iy < Ny - widthN; iy++) {
+            for (int iz = widthN; iz < Nz - widthN; iz++) {
+                AOS[ix][iy][iz].z += AOS[ix][iy][iz].x * AOS[ix][iy][iz].y;
+            }
+        }
+    }
+    //}
+
+    t2 = chrono::steady_clock::now();
+    auto dt3 = t2 - t1;
+    double time3 = chrono::duration_cast<double_ms>(dt3).count();
+    cout << "Pointer array time = " << time3 << endl;
+
+
+    // offset
+    t1 = chrono::steady_clock::now();
+    //for (int ire = 0; ire < repeatN; ire++) {
+    for (int ix = widthN; ix < Nx - widthN; ix++) {
+        for (int iy = widthN; iy < Ny - widthN; iy++) {
+            for (int iz = widthN; iz < Nz - widthN; iz++) {
+                AOS(ix,iy,iz).z += AOS(ix, iy, iz).x * AOS(ix, iy, iz).y;
+            }
+        }
+    }
+    //}
+
+    t2 = chrono::steady_clock::now();
+    auto dt4 = t2 - t1;
+    double time4 = chrono::duration_cast<double_ms>(dt4).count();
+    cout << "Pointer offset time = " << time4 << endl;
+
+
     return 0;
 }
 
-// Intel C++ 2022
+// Intel C++ 2022 in Visual Studio 2022
 // -O3
 // std=c++20
 //
 // 
-//SOA time = 406.008
-//AOS time = 423.098
+//SOA time = 407.361
+//AOS time = 407.897
+//Pointer array time = 12.4478
+//Pointer offset time = 12.1842
