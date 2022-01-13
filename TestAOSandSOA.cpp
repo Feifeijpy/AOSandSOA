@@ -109,7 +109,7 @@ int main()
 
 
 
-    // pointer array
+    // AOS pointer array
     t1 = chrono::steady_clock::now();
     //for (int ire = 0; ire < repeatN; ire++) {
     for (int ix = widthN; ix < Nx - widthN; ix++) {
@@ -124,10 +124,10 @@ int main()
     t2 = chrono::steady_clock::now();
     auto dt3 = t2 - t1;
     double time3 = chrono::duration_cast<double_ms>(dt3).count();
-    cout << "Pointer array time = " << time3 << endl;
+    cout << "AOS pointer array time = " << time3 << endl;
 
 
-    // offset
+    // AOS offset
     t1 = chrono::steady_clock::now();
     //for (int ire = 0; ire < repeatN; ire++) {
     for (int ix = widthN; ix < Nx - widthN; ix++) {
@@ -142,7 +142,43 @@ int main()
     t2 = chrono::steady_clock::now();
     auto dt4 = t2 - t1;
     double time4 = chrono::duration_cast<double_ms>(dt4).count();
-    cout << "Pointer offset time = " << time4 << endl;
+    cout << "AOS pointer offset time = " << time4 << endl;
+
+
+    // SOA pointer array
+    t1 = chrono::steady_clock::now();
+    //for (int ire = 0; ire < repeatN; ire++) {
+    for (int ix = widthN; ix < Nx - widthN; ix++) {
+        for (int iy = widthN; iy < Ny - widthN; iy++) {
+            for (int iz = widthN; iz < Nz - widthN; iz++) {
+                SOA.z[ix][iy][iz] += SOA.x[ix][iy][iz] * SOA.y[ix][iy][iz];
+            }
+        }
+    }
+    //}
+
+    t2 = chrono::steady_clock::now();
+    auto dt5 = t2 - t1;
+    double time5 = chrono::duration_cast<double_ms>(dt5).count();
+    cout << "SOA pointer array time = " << time5 << endl;
+
+
+    // SOA offset
+    t1 = chrono::steady_clock::now();
+    //for (int ire = 0; ire < repeatN; ire++) {
+    for (int ix = widthN; ix < Nx - widthN; ix++) {
+        for (int iy = widthN; iy < Ny - widthN; iy++) {
+            for (int iz = widthN; iz < Nz - widthN; iz++) {
+                SOA.z(ix, iy, iz) += SOA.x(ix, iy, iz) * SOA.y(ix, iy, iz);
+            }
+        }
+    }
+    //}
+
+    t2 = chrono::steady_clock::now();
+    auto dt6 = t2 - t1;
+    double time6 = chrono::duration_cast<double_ms>(dt6).count();
+    cout << "SOA pointer offset time = " << time6 << endl;
 
 
     return 0;
@@ -153,7 +189,9 @@ int main()
 // std=c++20
 //
 // 
-//SOA time = 407.361
-//AOS time = 407.897
-//Pointer array time = 12.4478
-//Pointer offset time = 12.1842
+//SOA time = 403.449
+//AOS time = 410.984
+//AOS pointer array time = 12.0645
+//AOS pointer offset time = 12.206
+//SOA pointer array time = 11.8724
+//SOA pointer offset time = 11.7235
